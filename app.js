@@ -14,19 +14,18 @@ new Vue({
 			this.monsterHealth = 100;
 		},
 		attack: function() {
-			// use a random val  to deal damage
-			var attackDamage = this.calculateDamage(5, 10);
-			var receivedDamage = this.calculateDamage(10, 20);
-
-			this.monsterHealth -= attackDamage;
-
+			this.monsterHealth -= this.calculateDamage(5, 10);
 			if(this.checkWin()) {
 				return;
 			}
-			this.playerHealth -= receivedDamage;
-			this.checkWin();
+			this.monsterAttack();
 		},
 		specialAttack: function() {
+			this.monsterHealth -= this.calculateDamage(10, 20);
+			if(this.checkWin()) {
+				return;
+			}
+			this.monsterAttack();
 
 		},
 		heal: function() {
@@ -61,5 +60,9 @@ new Vue({
 			return false;
 
 		},
+		monsterAttack: function() {
+			this.playerHealth -= this.calculateDamage(10, 20);
+			this.checkWin();
+		}
 	}
 });
