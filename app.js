@@ -15,30 +15,16 @@ new Vue({
 		},
 		attack: function() {
 			// use a random val  to deal damage
-			var min = 5;
-			var max = 10;
-			var receiveMin = 10
-			var receiveMax = 20;
-			var attackDamage = Math.max(Math.floor(Math.random() * max + 1), min);
-			var receivedDamage = Math.max(Math.floor(Math.random() * receiveMax + 1), receiveMin);
+			var attackDamage = this.calculateDamage(5, 10);
+			var receivedDamage = this.calculateDamage(10, 20);
+
 			this.monsterHealth -= attackDamage;
 
-			if (this.monsterHealth <= 0) {
-				alert("YOU WON");
-				this.gameIsRunning = false;
-				this.playerHealth = 100;
-				this.monsterHealth = 100;
+			if(this.checkWin()) {
 				return;
 			}
-			
 			this.playerHealth -= receivedDamage;
-
-			if(this.playerHealth <= 0) {
-				alert("Game Over, you Loose!!");
-				this.gameIsRunning = false;
-				this.playerHealth = 100;
-				this.monsterHealth = 100;
-			}
+			this.checkWin();
 		},
 		specialAttack: function() {
 
@@ -48,6 +34,32 @@ new Vue({
 		},
 		endGame: function() {
 			this.gameIsRunning = false;
-		}
+		},
+		calculateDamage: function(min, max) {
+			// Calculate damaage and return nr.
+			return Math.max(Math.floor(Math.random() * max + 1), min);
+		},
+		checkWin: function() {
+			if(this.monsterHealth <= 0) {
+				if(confirm('You Won! New Game?')) {
+					this.startGame();
+				}
+				else {
+					this.gameIsRunning = false;
+				}
+				return true;
+			}
+			else if(this.playerHealth <= 0) {
+				if(confirm('You Lost! New Game?')) {
+					this.startGame();
+				}
+				else {
+					this.gameIsRunning = false;
+				}
+				return true;
+			}
+			return false;
+
+		},
 	}
 });
