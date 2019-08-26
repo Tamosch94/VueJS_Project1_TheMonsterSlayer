@@ -3,7 +3,8 @@ new Vue({
     data: {
         playerHealth: 100,
         monsterHealth: 100,
-		gameIsRunning: false
+		gameIsRunning: false,
+		turns: []
 	},
 	// Use computed if you want to call functions
 	methods: {
@@ -12,16 +13,27 @@ new Vue({
 			this.gameIsRunning = true;
 			this.playerHealth = 100;
 			this.monsterHealth = 100;
+			this.turns = []
 		},
 		attack: function() {
-			this.monsterHealth -= this.calculateDamage(5, 10);
+			var damage = this.calculateDamage(5, 10);
+			this.monsterHealth -= damage;
+			this.turns.unshift({
+				isPlayer: true,
+				text: 'Player hits monster for ' + damage
+			});
 			if(this.checkWin()) {
 				return;
 			}
 			this.monsterAttack();
 		},
 		specialAttack: function() {
-			this.monsterHealth -= this.calculateDamage(10, 20);
+			var damage = this.calculateDamage(10, 20);
+			this.monsterHealth -= damage;
+			this.turns.unshift({
+				isPlayer: true,
+				text: 'Player hits monster hard for ' + damage
+			});
 			if(this.checkWin()) {
 				return;
 			}
@@ -29,7 +41,17 @@ new Vue({
 
 		},
 		heal: function() {
-
+			this.turns.unshift({
+				isPlayer: true,
+				text: 'Player is healing for 20'
+			});
+			if (this.playerHealth <= 90) {
+				this.playerHealth += 20;
+				this.monsterAttack();
+			}
+			else {
+				this.playerHealth = 10;
+			}
 		},
 		endGame: function() {
 			this.gameIsRunning = false;
@@ -61,8 +83,15 @@ new Vue({
 
 		},
 		monsterAttack: function() {
-			this.playerHealth -= this.calculateDamage(10, 20);
+			var damage = this.calculateDamage(10, 20);
+			this.playerHealth -= damage;
+			this.turns.unshift({
+				isPlayer: false,
+				text: 'Monster hits Player for ' + damage
+			});
 			this.checkWin();
 		}
 	}
 });
+
+// Note about VueJS: It really helps you create complex interactions with the dom in an easy way

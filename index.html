@@ -50,8 +50,10 @@
     <section class="row log">
         <div class="small-12 columns">
             <ul>
-                <li>
-
+                <li
+					v-for="obj in turns"
+					:class="{'player-turn': obj.isPlayer, 'monster-turn': !obj.isPlayer}">
+					{{ obj.text }}
                 </li>
             </ul>
         </div>
